@@ -18,6 +18,8 @@
 
         private const string DefaultUserAndPassword = "Anonymous";
 
+        private const int MaxMessagesPerConnection = 10000;
+
         private readonly ILogger logger;
 
         public ChilkatTransportClient([NotNull] ISmtpSettings settings)
@@ -43,6 +45,8 @@
 
         public bool IsInUse { get; set; }
 
+        public int MessagesSent { get; set; }
+
         public DateTime? LastUsed { get; set; }
 
         public bool MarkedForRemoval { get; set; }
@@ -59,6 +63,8 @@
                     logger.LogError(string.Format(CultureInfo.InvariantCulture, "SendEmailError: {0}, ", this.LastErrorText));
                     throw this.GetException(this.SmtpFailReason);
                 }
+
+                MessagesSent++;
             }
             finally
             {
@@ -85,6 +91,11 @@
         {
             this.IsInUse = false;
             this.LastUsed = DateTime.Now;
+
+            if (MessagesSent > MaxMessagesPerConnection)
+            {
+                this.MarkedForRemoval = true;
+            }
         }
 
         public void MarkAsFaulted()
@@ -118,13 +129,6 @@
             this.SmtpLoginDomain = settings.LoginDomain;
         }
 
-        /// <summary>
-        /// Executes the specified action.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <returns>
-        ///   <c>true</c> if the action succeeded; otherwise, <c>false</c>.
-        /// </returns>
         protected virtual bool TrySend(Email message)
         {
             return this.SendEmail(message);
@@ -182,7 +186,7 @@
             RenderFailed       // A failure occurred when rendering the email. (Rendering the email for sending includes tasks such as signing or encrypting.)
             DataFailure        // The SMTP replied with an error in response to the "DATA" command.
             */
-            return new InvalidMessageException(Sitecore.EDS.Core.Constants.Texts.IncorrectData);
+            return new InvalidMessageException(Sitecore.EDS.Core.Constants.Texts.IncorrectData + "Chilkat FailReason: " + failReason);
         }
 
         public void CloseConnection()
