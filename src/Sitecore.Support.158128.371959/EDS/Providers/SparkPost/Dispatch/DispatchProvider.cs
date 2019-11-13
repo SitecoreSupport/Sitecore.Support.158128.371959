@@ -1,6 +1,7 @@
 ﻿namespace Sitecore.Support.EDS.Providers.SparkPost.Dispatch
 {
     using System;
+    using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
     using Sitecore.Diagnostics;
@@ -10,7 +11,6 @@
     using Sitecore.EDS.Core.Reporting;
     using Sitecore.EDS.Providers.SparkPost.Configuration;
     using Sitecore.EDS.Providers.SparkPost.Dispatch;
-    using System.Diagnostics;
 
     public class DispatchProvider : Sitecore.EDS.Providers.SparkPost.Dispatch.DispatchProvider
     {

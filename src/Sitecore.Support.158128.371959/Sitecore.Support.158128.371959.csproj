@@ -42,12 +42,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ChilkatDotNet46, Version=9.5.0.66, Culture=neutral, PublicKeyToken=eb5fc1fc52ef09bd, processorArchitecture=AMD64">
+      <HintPath>..\packages\SC.ChilkatDotNet46.9.0.1\lib\ChilkatDotNet46.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Sitecore.EDS.Core, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SC.Sitecore.EDS.Core.9.0.1\lib\Sitecore.EDS.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sitecore.EDS.Providers.SparkPost, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SC.Sitecore.EDS.Providers.SparkPost.9.0.1\lib\Sitecore.EDS.Providers.SparkPost.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sitecore.ExM.Framework, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SC.Sitecore.ExM.Framework.9.0.1\lib\Sitecore.ExM.Framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sitecore.Kernel">
@@ -61,7 +69,9 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DispatchProvider.cs" />
+    <Compile Include="EDS\Core\Net\Smtp\ChilkatConnectionPool.cs" />
+    <Compile Include="EDS\Core\Net\Smtp\ChilkatTransportClient.cs" />
+    <Compile Include="EDS\Providers\SparkPost\Dispatch\DispatchProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
