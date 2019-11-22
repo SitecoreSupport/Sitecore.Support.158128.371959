@@ -20,6 +20,9 @@
 
         private readonly ILogger logger;
 
+        //fix 158128
+        private const int MaxMessagesPerConnection = 10000;
+
         public ChilkatTransportClient([NotNull] ISmtpSettings settings)
             : this(settings, LoggerFactory.Instance)
         {
@@ -43,6 +46,9 @@
 
         public bool IsInUse { get; set; }
 
+        //fix 158128
+        public int MessagesSent { get; set; }
+
         public DateTime? LastUsed { get; set; }
 
         public bool MarkedForRemoval { get; set; }
@@ -59,6 +65,9 @@
                     logger.LogError(string.Format(CultureInfo.InvariantCulture, "SendEmailError: {0}, ", this.LastErrorText));
                     throw this.GetException(this.SmtpFailReason);
                 }
+
+                //fix 158128
+                MessagesSent++;
             }
             finally
             {
@@ -85,6 +94,12 @@
         {
             this.IsInUse = false;
             this.LastUsed = DateTime.Now;
+
+            //fix 158128
+            if (MessagesSent > MaxMessagesPerConnection)
+            {
+                this.MarkedForRemoval = true;
+            }
         }
 
         public void MarkAsFaulted()
@@ -182,7 +197,8 @@
             RenderFailed       // A failure occurred when rendering the email. (Rendering the email for sending includes tasks such as signing or encrypting.)
             DataFailure        // The SMTP replied with an error in response to the "DATA" command.
             */
-            return new InvalidMessageException(Sitecore.EDS.Core.Constants.Texts.IncorrectData);
+            //fix 158128
+            return new InvalidMessageException(Sitecore.EDS.Core.Constants.Texts.IncorrectData + "Chilkat FailReason: " + failReason);
         }
 
         public void CloseConnection()
